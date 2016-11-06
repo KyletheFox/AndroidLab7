@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import static edu.temple.androidlab7.R.id.webView;
 
@@ -27,8 +28,6 @@ public class WebFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private int position;
     private String url;
-
-    private boolean stopOnCreateViewFromBeingCalled = false;
 
     public WebFragment() {
         // Required empty public constructor
@@ -73,6 +72,8 @@ public class WebFragment extends Fragment {
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Toast.makeText(getContext(), request.getUrl().toString(), Toast.LENGTH_SHORT).show();
+                view.loadUrl(request.getUrl().toString());
                 return true;
             }
         });
@@ -82,7 +83,7 @@ public class WebFragment extends Fragment {
             Log.d("OnCreateView", url);
             wv.loadUrl(url);
         } else {
-            wv.loadUrl("http://www.bing.com");
+            wv.loadUrl("http://www.bing.com");      // Homepage
         }
 
         return v;

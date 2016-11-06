@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     EditText editText;
     WebAdapter webAdapter;
     ViewPager viewPager;
-    int counter;
+    int currentFrag, maxFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.showOverflowMenu();
 
-        counter = 0;
+        currentFrag = 0;
+        maxFrag = 0;
+
         button = (Button) findViewById(R.id.urlButton);
         editText = (EditText) findViewById(R.id.urlEditText);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -61,17 +63,24 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_back:
-                counter--;
-                Toast.makeText(this, String.valueOf(counter), Toast.LENGTH_SHORT).show();
-                viewPager.setCurrentItem(counter);
+                Toast.makeText(this, String.valueOf(currentFrag), Toast.LENGTH_SHORT).show();
+                if (currentFrag > 0) {
+                    currentFrag--;
+                    viewPager.setCurrentItem(currentFrag);
+                }
                 return true;
             case R.id.action_forward:
-                counter++;
-                Toast.makeText(this, String.valueOf(counter), Toast.LENGTH_SHORT).show();
-                viewPager.setCurrentItem(counter);
+                Toast.makeText(this, String.valueOf(currentFrag), Toast.LENGTH_SHORT).show();
+                if (currentFrag < maxFrag) {
+                    currentFrag++;
+                    viewPager.setCurrentItem(currentFrag);
+                }
                 return true;
             case R.id.action_new:
-                Toast.makeText(this, String.valueOf(counter), Toast.LENGTH_SHORT).show();
+                maxFrag++;
+                currentFrag = maxFrag;
+                viewPager.setCurrentItem(currentFrag);
+                Toast.makeText(this, "Added new Fragment page", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
