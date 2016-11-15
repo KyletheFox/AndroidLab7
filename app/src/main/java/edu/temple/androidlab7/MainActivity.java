@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     WebAdapter webAdapter;
     ViewPager viewPager;
     String currentUrl;
+    Toolbar toolbar;
     int currentFrag, maxFrag;
 
     @Override
@@ -36,12 +36,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Setting up the toolbar on top of app
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.showOverflowMenu();
 
         currentFrag = 1;
-        maxFrag = 2;
+        maxFrag = 1;
         currentUrl = HOME_PAGE;
 
         button = (Button) findViewById(R.id.urlButton);
@@ -51,19 +51,12 @@ public class MainActivity extends AppCompatActivity {
         webAdapter = new WebAdapter(getSupportFragmentManager());
         viewPager.setAdapter(webAdapter);
         webAdapter.addUrl(HOME_PAGE);
-//        webAdapter.addUrl(HOME_PAGE);
 
-
-        viewPager.setCurrentItem(maxFrag);
+        viewPager.setCurrentItem(currentFrag);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                webAdapter.addUrl(editText.getText().toString());
-//                webAdapter.notifyDataSetChanged();
-//                Log.d("Url", webAdapter.urls.toString());
-//                Log.d("Url", String.valueOf(viewPager.getCurrentItem()));
-
                 // Loads the new URL into webView
                 currentUrl = editText.getText().toString();
                 WebView webView = (WebView) findViewById(R.id.webView);
@@ -73,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 webAdapter.updateUrl(currentUrl, viewPager.getCurrentItem());
                 webAdapter.notifyDataSetChanged();
                 Log.d("URL List", webAdapter.urls.toString());
-
             }
         });
 
@@ -89,14 +81,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_back:
-                if (currentFrag > 1) {
+                if (currentFrag > 0) {
                     currentFrag--;
                     viewPager.setCurrentItem(currentFrag);
                     Log.d("Fragment Number", "Opening Fragment: " + currentFrag);
                 }
                 return true;
             case R.id.action_forward:
-                if (currentFrag < maxFrag) {
+                if (currentFrag < maxFrag - 1) {
                     currentFrag++;
                     viewPager.setCurrentItem(currentFrag);
                     Log.d("Fragment Number", "Opening Fragment: " + currentFrag);
@@ -108,8 +100,11 @@ public class MainActivity extends AppCompatActivity {
                 webAdapter.addUrl(editText.getText().toString());
                 webAdapter.notifyDataSetChanged();
                 viewPager.setCurrentItem(currentFrag);
-
                 Log.d("URL List", webAdapter.urls.toString());
+
+                // Move back a page because adapter always add two fragments
+                currentFrag--;
+                viewPager.setCurrentItem(currentFrag);
 
                 return true;
             default:
@@ -120,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
     public class WebAdapter extends FragmentStatePagerAdapter {
 
         ArrayList urls = new ArrayList<>();
-        Iterator iter = urls.iterator();
-
 
         public WebAdapter(FragmentManager fm) {
             super(fm);
@@ -148,16 +141,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             Log.d("getItem", String.valueOf(position));
-            if (position >= 1)
-                return WebFragment.newInstance(position, urls.get(position-1).toString());
-            else
-                return WebFragment.newInstance(position, "http://www.bing.com");
-
+            return WebFragment.newInstance(position, urls.get(position).toString());
         }
 
     }
-
-
-
 
 }
