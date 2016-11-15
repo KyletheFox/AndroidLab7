@@ -144,6 +144,11 @@ public class MainActivity extends AppCompatActivity {
             return WebFragment.newInstance(position, urls.get(position).toString());
         }
 
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
     }
 
 }
