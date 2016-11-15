@@ -53,40 +53,66 @@ public class WebFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("onCreate", "---------------------- onCreate Called ------------------");
         if (getArguments() != null) {
+            Log.d("Arguments", "getArguments is has args: " + getArguments().getString(URL_KEY));
             position = getArguments().getInt(ARG_PARAM1);
-            url = getArguments().getString(URL_KEY);
+            this.url = getArguments().getString(URL_KEY);
+        } else {
+            Log.d("Arguments", "getArguments doesn't have args");
         }
+
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("onCreateView", "---------------------- OnCreateView Called ----------------");
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_web, container, false);
-        Log.d("OnCreateView", "OnCreateView is being called");
         WebView wv = (WebView) v.findViewById(webView);
+
         wv.getSettings().setJavaScriptEnabled(true);
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Toast.makeText(getContext(), request.getUrl().toString(), Toast.LENGTH_SHORT).show();
                 view.loadUrl(request.getUrl().toString());
+                url = request.getUrl().toString();
                 return true;
             }
         });
 
-        if (url != null) {
-            url = getArguments().getString(URL_KEY);
-            Log.d("OnCreateView", url);
-            wv.loadUrl(url);
+        if (this.url != null) {
+            wv.loadUrl(this.url);
         } else {
             wv.loadUrl("http://www.bing.com");      // Homepage
         }
 
         return v;
     }
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("url", url);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d("onDestroy", "---------------------- OnDestroy Called ----------------");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d("onDestoryView", "---------------------- OnDestoryView Called ----------------");
+        super.onDestroyView();
+    }
+
 
 }
