@@ -1,5 +1,6 @@
 package edu.temple.androidlab7;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     WebAdapter webAdapter;
     ViewPager viewPager;
     String currentUrl;
+    Uri data;
     Toolbar toolbar;
     int currentFrag, maxFrag;
 
@@ -40,9 +42,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.showOverflowMenu();
 
+        data = getIntent().getData();
+
         currentFrag = 1;
         maxFrag = 1;
-        currentUrl = HOME_PAGE;
+
+        if (data != null) {
+            currentUrl = data.toString();
+        } else {
+            currentUrl = HOME_PAGE;
+        }
 
         button = (Button) findViewById(R.id.urlButton);
         editText = (EditText) findViewById(R.id.urlEditText);
@@ -50,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         webAdapter = new WebAdapter(getSupportFragmentManager());
         viewPager.setAdapter(webAdapter);
-        webAdapter.addUrl(HOME_PAGE);
+        webAdapter.addUrl(currentUrl);
 
         viewPager.setCurrentItem(currentFrag);
 
